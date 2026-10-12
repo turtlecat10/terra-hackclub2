@@ -10,11 +10,17 @@ public class Main{
     {"0",  "0",  "0",  "0",  "0",  "0",  "0",  "0" },
     {"wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"},
     {"wr", "wn", "wb", "wq", "wk", "wb", "wn", "wr"}};
+    public static String[][] tempBoard = new String[8][8];
     public static String[][] nextBoard = new String[8][8];
-    public static String pieceClicked = "";
+    public static String pieceClicked = "0";
     public static int prevRow = -1;
     public static int prevCol = -1;
+    public static boolean[] whiteCastle = new boolean[3];
+    public static boolean[] blackCastle = new boolean[3];
     public static boolean enpassant = false;
+    public static int enpassantCol = -1;
+    public static boolean castling = false;
+    public static boolean whiteTurn = true; 
     public static String prevPiece = "0";
     public static DrawingCanvas surface;
     public static boolean running = true;

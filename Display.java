@@ -58,13 +58,20 @@ public class Display {
     public static void pieces(Graphics2D g2d){
         for(int i = 0; i < squares; i++){
             for(int l = 0; l < squares; l++){
-                if(!Main.currentBoard[i][l].equals("0"));
-                String code = Main.currentBoard[i][l];
-                BufferedImage img = pieceImages.get(code);
-                int x = boarder + (l*squareSize);
-                int y = boarder + (i*squareSize);
-                g2d.drawImage(img,x,y,squareSize,squareSize, null);
+                if(!Main.currentBoard[i][l].equals("0")){
+
+                    String code = Main.currentBoard[i][l];
+                    BufferedImage img = pieceImages.get(code);
+                    if(img != null){
+                        int x = boarder + (l*squareSize);
+                        int y = boarder + (i*squareSize);
+                        g2d.drawImage(img,x,y,squareSize,squareSize, null);
+                    }
+                }
             }
         }
+    }
+    public static void promotion(Graphics2D g2d){
+        
     }
 }

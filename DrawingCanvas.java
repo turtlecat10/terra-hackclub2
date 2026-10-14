@@ -4,8 +4,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DrawingCanvas extends JPanel {
-    private static int boarder = 20;
+    private static int boarder = 30;
     private static int squareSize = 60;
+    public static int hoverRow = -1;
+    public static int hoverCol = -1;
     public DrawingCanvas(){
         this.setPreferredSize(new Dimension(squareSize*8+boarder*2,squareSize*8+boarder*2));
         this.setBackground(Color.DARK_GRAY);
@@ -18,10 +20,12 @@ public class DrawingCanvas extends JPanel {
                 int row = (mouseY - boarder) / squareSize; 
                 if(col >= 0 && col < 8 && row >= 0 && row < 8){
                     if(Main.selectBoard[row][col] == 0){
+                        hoverRow = row;
+                        hoverCol = col;
                         Main.selectBoard[row][col] = 1;
-
                     }else{
-                        Main.selectBoard[row][col] = 0;
+                        hoverRow = -1;
+                        hoverCol = -1;
                     }
                     Run.turn(row,col);
                 }
@@ -37,5 +41,8 @@ public class DrawingCanvas extends JPanel {
 
         Display.drawBoard(g2d);
         Display.pieces(g2d);
+        Display.promotion(g2d);
+        Display.takenPieces(g2d);
+        Display.drawDots(g2d);
     }
 }

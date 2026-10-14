@@ -5,6 +5,19 @@ public class CheckLegal {
         int distY = row - prevRow;
         int distX = col - prevCol;
         if(piece == null || piece.isEmpty() || piece.equals("0")){
+            Main.selectBoard = new int[8][8];
+            return false;
+        }
+        if(prevRow == row && prevCol == col){
+            return false;
+        }
+        if(!nextPiece.equals("0") && piece.charAt(0) == nextPiece.charAt(0) ){
+            Main.selectBoard = new int[8][8];
+            Main.selectBoard[row][col] = 1;
+            Main.prevPiece = nextPiece;
+            Main.prevRow = row;
+            Main.prevCol = col;
+            Main.pieceChange = true;
             return false;
         }
         if(piece.charAt(0) == 'w' && !Main.whiteTurn){
@@ -12,32 +25,77 @@ public class CheckLegal {
         }else if(piece.charAt(0) == 'b' && Main.whiteTurn){
             return false;
         }
-        if(!nextPiece.equals("0") && piece.charAt(0) == nextPiece.charAt(0)){
-            return false;
-        }
         if(piece.charAt(1) == 'r'){
             if(!isRookMove(distX,distY,prevRow,prevCol)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
         }else if(piece.charAt(1) == 'n'){
             if(!isKnightMove(distX,distY)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
             
         }else if(piece.charAt(1) == 'b'){
             if(!isBishopMove(distX,distY,prevRow,prevCol)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
         }else if(piece.charAt(1) == 'q'){
             if(!isQueenMove(distX,distY,prevRow,prevCol)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
         }else if(piece.charAt(1) == 'k'){
             if(!isKingMove(distX,distY,prevRow,prevCol)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
         }else if(piece.charAt(1) == 'p'){
             if(!isPawnMove(distX,distY,prevRow,prevCol)){
+                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
                 return false;
             }
         }
@@ -113,7 +171,7 @@ public class CheckLegal {
     public static boolean isPawnMove(int distX, int distY, int row, int col){
         int newRow = row + distY;
         int newCol = col + distX;
-
+        Run.tempReset();
         String pawn = Main.tempBoard[row][col];
         String targetPiece = Main.tempBoard[newRow][newCol];
         char color = pawn.charAt(0);
@@ -186,7 +244,7 @@ public class CheckLegal {
             return false;
         }
         boolean[] rights;
-        if(Main.whiteTurn){
+        if(Main.currentBoard[Main.prevRow][Main.prevCol].charAt(0) == 'w'){
             rights = Main.whiteCastle;
         }else{
             rights = Main.blackCastle;
@@ -223,10 +281,6 @@ public class CheckLegal {
             }
             stepCol = nextCol;
         }
-        return true;
-    }
-    public static boolean isEnpassant(){
-
         return true;
     }
     public static boolean isCheck(){
@@ -289,5 +343,86 @@ public class CheckLegal {
             }
         }
         return false;
+    }
+    public static int attackAble(int pieceX, int pieceY, int endX, int endY, String piece){
+        Run.tempReset();
+        int distY = endY - pieceY;
+        int distX = endX - pieceX;
+        // System.out.println(distY+" "+distX);
+        String endPiece = Main.tempBoard[endY][endX];
+        if(piece == null || piece.equals("0")){
+            return 2;
+        }
+        if(endPiece != "0"){
+            if(endPiece.charAt(0) == piece.charAt(0)){
+                return 2;
+            }
+        }
+        switch (piece.charAt(1)){
+            case 'r':
+                if(isRookMove(distX,distY,pieceY,pieceX)){
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                break;
+            case 'n':
+                if(isKnightMove(distX,distY)){
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                break;
+            case 'b':
+                System.out.println("Bishop Move: "+distX+" "+distY);
+                if(isBishopMove(distX,distY,pieceY,pieceX)){
+                    System.out.println("True");
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                System.out.println("False");
+                break;
+            case 'q':
+                if(isQueenMove(distX,distY,pieceY,pieceX)){
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                break;
+            case 'k':
+                if(isKingMove(distX,distY,pieceY,pieceX)){
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                break;
+            case 'p':
+                if(isPawnMove(distX,distY,pieceY,pieceX)){
+                    if(endPiece != "0"){
+                        if(endPiece.charAt(0) != piece.charAt(0)){
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                break;
+        }
+        return 2;
     }
 }

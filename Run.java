@@ -68,7 +68,7 @@ public class Run {
                 Main.prevPiece = pieceClicked;
                 Main.prevRow = row;
                 Main.prevCol = col;
-                Main.selectBoard = new int[8][8];
+                // Main.selectBoard = new int[8][8];
                 Main.selectBoard[row][col] = 1;
                 DrawingCanvas.hoverRow = row;
                 DrawingCanvas.hoverCol = col;
@@ -78,6 +78,7 @@ public class Run {
         }else{
             tempReset();
             if(CheckLegal.pieceMove(Main.prevRow,Main.prevCol,row,col)){
+                Main.selectBoard[row][col] = 1;
                 run(row,col);
                 DrawingCanvas.hoverRow = -1;
                 DrawingCanvas.hoverCol = -1;
@@ -93,6 +94,9 @@ public class Run {
             }
         }
         Main.surface.repaint();
+        if(CheckLegal.checkmate()){
+            System.out.println("Checkmate");
+        }
     }
     public static void run(int row, int col){
         if(Main.castling){

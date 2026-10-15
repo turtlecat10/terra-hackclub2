@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class CheckLegal {
     public static boolean pieceMove(int prevRow, int prevCol, int row, int col){
         String piece = Main.currentBoard[prevRow][prevCol];
@@ -365,6 +366,62 @@ public class CheckLegal {
         }
         return false;
     }
+    public static boolean isYouCheck(char myColor){
+        char enemyColor = 'w';
+        if(myColor == 'w'){
+            enemyColor = 'b';
+        }
+        int kingRow = -1;
+        int kingCol = -1;
+        String kingCode = myColor+"k";
+
+        for(int i = 0; i < 8; i++){
+            for(int l = 0; l < 8; l++){
+                String piece = Main.tempBoard[i][l];
+                if(piece.equals(kingCode)){
+                    kingRow = i;
+                    kingCol = l;
+                }
+            }
+        }
+        if(kingRow == -1 || kingCol == -1){
+            return false;
+        }
+        for(int i = 0; i < 8; i++){
+            for(int l = 0; l < 8; l++){
+                String enemyPiece = Main.tempBoard[i][l];
+                if(enemyPiece.equals("0") || enemyPiece.isEmpty()){
+                    continue;
+                }
+                if(enemyPiece.charAt(0) == enemyColor){
+                    int distX = kingCol - l;
+                    int distY = kingRow - i;
+                    char type = enemyPiece.charAt(1);
+                    boolean canAttack = false;
+                    if(type == 'r'){
+                        canAttack = isRookMove(distX, distY, i, l);
+                    }else if(type == 'n'){
+                        canAttack = isKnightMove(distX ,distY);
+                    }else if(type == 'b'){
+                        canAttack = isBishopMove(distX, distY, i, l);
+                    }else if(type == 'q'){
+                        canAttack = isQueenMove(distX, distY, i, l);
+                    }else if(type == 'k'){
+                        canAttack = (Math.abs(distX) <=1 && Math.abs(distY) <= 1);
+                    }else if(type == 'p'){
+                        int enemyPawnDirection = (enemyColor == 'w') ? -1 : 1;
+                        if(distY == enemyPawnDirection && Math.abs(distX) == 1){
+                            canAttack = true;
+                        }
+                    }
+                    if(canAttack){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public static int attackAble(int pieceX, int pieceY, int endX, int endY, String piece){
         for(int i = 0; i < 8; i++){
             Main.tempBoard[i] = Main.currentBoard[i].clone();
@@ -380,7 +437,7 @@ public class CheckLegal {
         //     return 2;
         // }
         if(endPiece != "0"){
-            if(endPiece.charAt(0) == piece.charAt(0)){
+            if(endPiece.charAt(0) == activePiece.charAt(0)){
                 return 2;
             }
         }
@@ -410,5 +467,40 @@ public class CheckLegal {
             return 1;
         }
         return 0;
+    }
+    public static boolean checkmate(){
+        if (!isYouCheck(Main.whiteTurn ? 'w' : 'b')) {
+            return false; 
+        }
+        ArrayList<String> pieces = new ArrayList<>();
+        ArrayList<Integer> pieceRow = new ArrayList<>();
+        ArrayList<Integer> pieceCol = new ArrayList<>();
+        char myColor = 'w';
+        if(!Main.whiteTurn){
+            myColor = 'b';
+        }
+        for(int i = 0; i < 8; i++){
+            for(int l = 0; l < 8; l++){
+                if(Main.currentBoard[i][l].equals("0")){
+                    continue;
+                }
+                if(Main.currentBoard[i][l].charAt(0) == myColor){
+                    pieces.add(Main.currentBoard[i][l]);
+                    pieceRow.add(i);
+                    pieceCol.add(l);
+                }
+            }
+        }
+        for(int i = 0; i < pieces.size(); i++){
+            for(int l = 0; l < 8; l++){
+                for(int r = 0; r < 8; r++){
+                    int result = (attackAble(pieceCol.get(i),pieceRow.get(i),r,l,pieces.get(i)));
+                    if(result == 1 || result == 0){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

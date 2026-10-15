@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.util.*;
-import java.util.List;
 
 public class Display {
     private static final int squares = 8;
@@ -46,14 +45,12 @@ public class Display {
                 int y = boarder + (row*squareSize);
                 if((col+row) % 2 == 0){
                     if((Main.selectBoard[row][col] == 1 || Main.prevSelect[row][col] == 1) && !Main.promotion){
-                        System.out.println(row+" "+col+" "+Main.selectBoard[row][col]+" "+Main.prevSelect[row][col]+" "+!Main.promotion);
                         g2d.setColor(highLightSquare);
                     }else{
                         g2d.setColor(lightSquare);
                     }
                 }else{
                     if((Main.selectBoard[row][col] == 1 || Main.prevSelect[row][col] == 1) && !Main.promotion){
-                        System.out.println(row+" "+col);
                         g2d.setColor(highDarkSquare);
                     }else{
                         g2d.setColor(darkSquare);
@@ -179,14 +176,13 @@ public class Display {
             if(!currentPiece.equals("0")){
                 for(int i = 0; i < 8; i++){
                     for(int l = 0; l < 8; l++){
-                        // System.out.println(i+" "+l+" "+currentCol+" "+currentRow+" "+currentPiece);
                         int yes = CheckLegal.attackAble(currentCol,currentRow,i,l,currentPiece);
                         if(yes == 0){
-                            g2d.setColor(new Color(0,0,0,50));
+                            g2d.setColor(new Color(0,0,0,65));
                             g2d.fillOval(boarder+i*squareSize+squareSize/2-circle/2,boarder+l*squareSize+squareSize/2-circle/2,circle,circle);
                         }else if(yes == 1){
-                            g2d.setStroke(new BasicStroke(10));
-                            g2d.setColor(new Color(0,0,0,50));
+                            g2d.setStroke(new BasicStroke(5));
+                            g2d.setColor(new Color(0,0,0,65));
                             g2d.drawOval(boarder+i*squareSize,boarder+l*squareSize,60,60);
                         }
                     }

@@ -1,6 +1,7 @@
 public class Run {
     
     public static void turn(int row, int col){
+        tempReset();
         if(Main.promotion){
             if(Main.promotionSquare[0] == 0){
                 if(row <= 3 && col == Main.promotionSquare[1]){
@@ -67,21 +68,27 @@ public class Run {
                 Main.prevPiece = pieceClicked;
                 Main.prevRow = row;
                 Main.prevCol = col;
+                Main.selectBoard = new int[8][8];
+                Main.selectBoard[row][col] = 1;
+                DrawingCanvas.hoverRow = row;
+                DrawingCanvas.hoverCol = col;
             }else{
                 Main.selectBoard = new int[8][8];
             }
         }else{
             tempReset();
             if(CheckLegal.pieceMove(Main.prevRow,Main.prevCol,row,col)){
-                // System.out.println("Yes running");
                 run(row,col);
+                DrawingCanvas.hoverRow = -1;
+                DrawingCanvas.hoverCol = -1;
             }else{
-                System.out.println(Main.prevPiece+" "+Main.currentBoard[row][col]);
                 if(!Main.pieceChange){
                     Main.selectBoard = new int[8][8];
                     Main.prevPiece = "0";
                     Main.prevRow = -1;
                     Main.prevCol = -1;
+                    DrawingCanvas.hoverRow = -1;
+                    DrawingCanvas.hoverCol = -1;
                 }
             }
         }

@@ -21,13 +21,29 @@ public class CheckLegal {
             return false;
         }
         if(piece.charAt(0) == 'w' && !Main.whiteTurn){
+            if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
             return false;
         }else if(piece.charAt(0) == 'b' && Main.whiteTurn){
+            if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
+                    Main.selectBoard = new int[8][8];
+                    Main.selectBoard[row][col] = 1;
+                    Main.prevPiece = nextPiece;
+                    Main.prevRow = row;
+                    Main.prevCol = col;
+                    Main.pieceChange = true;
+                }
             return false;
         }
         if(piece.charAt(1) == 'r'){
             if(!isRookMove(distX,distY,prevRow,prevCol)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
@@ -39,7 +55,7 @@ public class CheckLegal {
             }
         }else if(piece.charAt(1) == 'n'){
             if(!isKnightMove(distX,distY)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
@@ -52,49 +68,53 @@ public class CheckLegal {
             
         }else if(piece.charAt(1) == 'b'){
             if(!isBishopMove(distX,distY,prevRow,prevCol)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
                     Main.prevRow = row;
                     Main.prevCol = col;
                     Main.pieceChange = true;
+                    return false;
                 }
                 return false;
             }
         }else if(piece.charAt(1) == 'q'){
             if(!isQueenMove(distX,distY,prevRow,prevCol)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
                     Main.prevRow = row;
                     Main.prevCol = col;
                     Main.pieceChange = true;
+                    return false;
                 }
                 return false;
             }
         }else if(piece.charAt(1) == 'k'){
             if(!isKingMove(distX,distY,prevRow,prevCol)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
                     Main.prevRow = row;
                     Main.prevCol = col;
                     Main.pieceChange = true;
+                    return false;
                 }
                 return false;
             }
         }else if(piece.charAt(1) == 'p'){
             if(!isPawnMove(distX,distY,prevRow,prevCol)){
-                if(!nextPiece.equals("0") && (nextPiece.charAt(0) != piece.charAt(0))){
+                if(!nextPiece.equals("0") && nextPiece.charAt(0) != piece.charAt(0)){
                     Main.selectBoard = new int[8][8];
                     Main.selectBoard[row][col] = 1;
                     Main.prevPiece = nextPiece;
                     Main.prevRow = row;
                     Main.prevCol = col;
                     Main.pieceChange = true;
+                    return false;
                 }
                 return false;
             }
@@ -110,6 +130,7 @@ public class CheckLegal {
             Main.enpassant = false;
             return false;
         }
+        Main.pieceChange = false;
         return true;
     }
     public static boolean isRookMove(int distX, int distY,int row, int col){
@@ -171,7 +192,6 @@ public class CheckLegal {
     public static boolean isPawnMove(int distX, int distY, int row, int col){
         int newRow = row + distY;
         int newCol = col + distX;
-        Run.tempReset();
         String pawn = Main.tempBoard[row][col];
         String targetPiece = Main.tempBoard[newRow][newCol];
         char color = pawn.charAt(0);
@@ -286,6 +306,7 @@ public class CheckLegal {
     public static boolean isCheck(){
         char myColor = 'w';
         char enemyColor = 'b';
+    
         if(!Main.prevPiece.equals("0")){
             myColor = Main.prevPiece.charAt(0);
             enemyColor = (myColor == 'w') ? 'b' : 'w';
@@ -300,9 +321,6 @@ public class CheckLegal {
         for(int i = 0; i < 8; i++){
             for(int l = 0; l < 8; l++){
                 String piece = Main.tempBoard[i][l];
-                if(piece.equals("0") || piece.isEmpty()){
-                    continue;
-                }
                 if(piece.equals(kingCode)){
                     kingRow = i;
                     kingCol = l;
@@ -334,7 +352,10 @@ public class CheckLegal {
                     }else if(type == 'k'){
                         canAttack = (Math.abs(distX) <=1 && Math.abs(distY) <= 1);
                     }else if(type == 'p'){
-                        canAttack = isPawnMove(distX, distY, i, l);
+                        int enemyPawnDirection = (enemyColor == 'w') ? -1 : 1;
+                        if(distY == enemyPawnDirection && Math.abs(distX) == 1){
+                            canAttack = true;
+                        }
                     }
                     if(canAttack){
                         return true;
@@ -345,84 +366,49 @@ public class CheckLegal {
         return false;
     }
     public static int attackAble(int pieceX, int pieceY, int endX, int endY, String piece){
-        Run.tempReset();
-        int distY = endY - pieceY;
-        int distX = endX - pieceX;
-        // System.out.println(distY+" "+distX);
-        String endPiece = Main.tempBoard[endY][endX];
-        if(piece == null || piece.equals("0")){
+        for(int i = 0; i < 8; i++){
+            Main.tempBoard[i] = Main.currentBoard[i].clone();
+        }
+        String activePiece = Main.tempBoard[pieceY][pieceX];
+        if(activePiece == null || activePiece.equals("0") || activePiece.isEmpty()){
             return 2;
         }
+        int distY = endY - pieceY;
+        int distX = endX - pieceX;
+        String endPiece = Main.tempBoard[endY][endX];
+        // if(piece == null || piece.equals("0")){
+        //     return 2;
+        // }
         if(endPiece != "0"){
             if(endPiece.charAt(0) == piece.charAt(0)){
                 return 2;
             }
         }
-        switch (piece.charAt(1)){
-            case 'r':
-                if(isRookMove(distX,distY,pieceY,pieceX)){
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                break;
-            case 'n':
-                if(isKnightMove(distX,distY)){
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                break;
-            case 'b':
-                System.out.println("Bishop Move: "+distX+" "+distY);
-                if(isBishopMove(distX,distY,pieceY,pieceX)){
-                    System.out.println("True");
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                System.out.println("False");
-                break;
-            case 'q':
-                if(isQueenMove(distX,distY,pieceY,pieceX)){
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                break;
-            case 'k':
-                if(isKingMove(distX,distY,pieceY,pieceX)){
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                break;
-            case 'p':
-                if(isPawnMove(distX,distY,pieceY,pieceX)){
-                    if(endPiece != "0"){
-                        if(endPiece.charAt(0) != piece.charAt(0)){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-                break;
+
+        boolean geometricMoveValid = false;
+        switch(piece.charAt(1)){
+            case 'r': geometricMoveValid = isRookMove(distX,distY,pieceY,pieceX); break;
+            case 'n': geometricMoveValid = isKnightMove(distX,distY); break;
+            case 'b': geometricMoveValid = isBishopMove(distX,distY,pieceY,pieceX); break;
+            case 'q': geometricMoveValid = isQueenMove(distX,distY,pieceY,pieceX); break;
+            case 'k': geometricMoveValid = isKingMove(distX,distY,pieceY,pieceX); break;
+            case 'p': geometricMoveValid = isPawnMove(distX,distY,pieceY,pieceX); break;
         }
-        return 2;
+        if(!geometricMoveValid){
+            return 2;
+        }
+        Main.tempBoard[endY][endX] = Main.tempBoard[pieceY][pieceX];
+        Main.tempBoard[pieceY][pieceX] = "0";
+        if(Main.enpassant && piece.charAt(1) == 'p'){
+            Main.tempBoard[pieceY][endX] = "0";
+        }
+        boolean check = isCheck();
+        if(check){
+            return 2;
+        }
+        if(!Main.currentBoard[endY][endX].equals("0")){
+            return 1;
+        }
+        return 0;
     }
 }

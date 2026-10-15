@@ -22,12 +22,15 @@ public class DrawingCanvas extends JPanel {
                     if(Main.selectBoard[row][col] == 0){
                         hoverRow = row;
                         hoverCol = col;
-                        Main.selectBoard[row][col] = 1;
                     }else{
                         hoverRow = -1;
                         hoverCol = -1;
                     }
                     Run.turn(row,col);
+                    if(Main.pieceChange){
+                        hoverRow = Main.prevRow;
+                        hoverCol = Main.prevCol;
+                    }
                 }
             }
         });

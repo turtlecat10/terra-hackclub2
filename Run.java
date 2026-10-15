@@ -97,6 +97,9 @@ public class Run {
         if(CheckLegal.checkmate()){
             System.out.println("Checkmate");
         }
+        if(CheckLegal.stalemate()){
+            System.out.println("Stalemate");
+        }
     }
     public static void run(int row, int col){
         if(Main.castling){

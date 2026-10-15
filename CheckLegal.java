@@ -503,4 +503,39 @@ public class CheckLegal {
         }
         return true;
     }
+    public static boolean stalemate(){
+        if (isYouCheck(Main.whiteTurn ? 'w' : 'b')) {
+            return false; 
+        }
+        ArrayList<String> pieces = new ArrayList<>();
+        ArrayList<Integer> pieceRow = new ArrayList<>();
+        ArrayList<Integer> pieceCol = new ArrayList<>();
+        char myColor = 'w';
+        if(!Main.whiteTurn){
+            myColor = 'b';
+        }
+        for(int i = 0; i < 8; i++){
+            for(int l = 0; l < 8; l++){
+                if(Main.currentBoard[i][l].equals("0")){
+                    continue;
+                }
+                if(Main.currentBoard[i][l].charAt(0) == myColor){
+                    pieces.add(Main.currentBoard[i][l]);
+                    pieceRow.add(i);
+                    pieceCol.add(l);
+                }
+            }
+        }
+        for(int i = 0; i < pieces.size(); i++){
+            for(int l = 0; l < 8; l++){
+                for(int r = 0; r < 8; r++){
+                    int result = (attackAble(pieceCol.get(i),pieceRow.get(i),r,l,pieces.get(i)));
+                    if(result == 1 || result == 0){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

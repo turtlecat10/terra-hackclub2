@@ -10,6 +10,8 @@ public class Display {
     private static final int squareSize = 60;
     private static final int boarder = 30;
     private static final int circle = 20;
+    public static String name1 = "";
+    public static String name2 = "";
 
     private static final Color lightSquare = new Color(235, 236, 208);
     private static final Color highLightSquare = new Color(245, 246, 130);
@@ -32,13 +34,12 @@ public class Display {
             }
         }
     }
-
     public static void drawBoard(Graphics2D g2d){
         g2d.setColor(boarderColor);
         g2d.fillRect(0,0,squareSize*8+boarder*2,squareSize*8+boarder*2);
         g2d.setColor(text);
-        g2d.drawString("Player 2",boarder,boarder/2);
-        g2d.drawString("Player 1", boarder, boarder+squareSize*8+boarder/2);
+        g2d.drawString(name1,boarder,boarder/2);
+        g2d.drawString(name2, boarder, boarder+squareSize*8+boarder/2);
         for(int col = 0; col < squares; col++){
             for(int row = 0; row < squares; row++){
                 int x = boarder + (col*squareSize);
@@ -105,8 +106,8 @@ public class Display {
     }
     public static void takenPieces(Graphics2D g2d){
         FontMetrics metrics = g2d.getFontMetrics();
-        int width1 = metrics.stringWidth("Player 1");
-        int width2 = metrics.stringWidth("Player 2");
+        int width1 = metrics.stringWidth(name1);
+        int width2 = metrics.stringWidth(name2);
         Map<String, Integer> blackOrder = Map.of("bp", 0, "bn", 1, "bb", 2, "br", 3, "bq", 4);
         Map<String, Integer> whiteOrder = Map.of("wp", 0, "wn", 1, "wb", 2, "wr", 3, "wq", 4);
         Main.blackTaken.sort(Comparator.comparingInt(piece -> whiteOrder.getOrDefault(piece,Integer.MAX_VALUE)));
@@ -189,5 +190,36 @@ public class Display {
                 }
             }
         }
+    }
+    public static void setUp(Graphics2D g2d){
+        if(Main.player1){
+            Font myFont = new Font("Ariel",Font.PLAIN,30);
+            Color color = new Color(0,0,0);
+            g2d.setFont(myFont);
+            g2d.setColor(color);
+            g2d.drawString("Player 1 please enter your name",30,30);
+            g2d.drawString(name1,30,60);
+        }else{
+            Font myFont = new Font("Ariel",Font.PLAIN,30);
+            Color color = new Color(0,0,0);
+            g2d.setFont(myFont);
+            g2d.setColor(color);
+            g2d.drawString("Player 2 please enter your name",30,30);
+            g2d.drawString(name2,30,60);
+        }
+    }
+    public static void chessClock(Graphics2D g2d){
+        int whiteMin = Main.whiteTime / 60;
+        int whiteSec = Main.whiteTime % 60;
+        String whiteClockText = String.format("%02d:%02d",whiteMin,whiteSec);
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
+        g2d.drawString(whiteClockText,boarder+squareSize*6,boarder+squareSize*8+24);
+        int blackMin = Main.blackTime / 60;
+        int blackSec = Main.blackTime % 60;
+        String blackClockText = String.format("%02d:%02d",blackMin,blackSec);
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
+        g2d.drawString(blackClockText,boarder+squareSize*6,24);
     }
 }

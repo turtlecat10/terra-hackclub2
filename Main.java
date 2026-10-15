@@ -15,6 +15,8 @@ public class Main{
     public static String[][] tempBoard = new String[8][8];
     public static String[][] nextBoard = new String[8][8];
     public static String[][] attackBoard = new String[8][8];
+    public static boolean setUp = true;
+    public static boolean player1 = true;
     public static String pieceClicked = "0";
     public static int prevRow = -1;
     public static int prevCol = -1;
@@ -34,6 +36,9 @@ public class Main{
     public static String prevPiece = "0";
     public static DrawingCanvas surface;
     public static boolean running = true;
+    public static int whiteTime = 10*60;
+    public static int blackTime = 10*60;
+    public static Timer chessClock;
     public static void main(String[] args){
         Display.loadAssets();
 
@@ -43,6 +48,23 @@ public class Main{
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        chessClock = new Timer(1000, e ->{
+            if(!Main.setUp && !Main.promotion){
+                if(Main.whiteTurn){
+                    if(whiteTime > 0){
+                        whiteTime--;
+                    }
+                }else{
+                    if(blackTime > 0){
+                        blackTime--;
+                    }
+                }
+                if(Main.surface != null){
+                    Main.surface.repaint();
+                }
+            }
+        });
+        Main.chessClock.start();
         frame.setVisible(true);
     }
 }

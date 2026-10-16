@@ -93,13 +93,20 @@ public class Run {
                 }
             }
         }
-        Main.surface.repaint();
         if(CheckLegal.checkmate()){
-            System.out.println("Checkmate");
+            Main.choosingGamemode = true;
+            if(Main.whiteTurn){
+                Main.black += 1;
+            }else{
+                Main.white += 1;
+            }
         }
         if(CheckLegal.stalemate()){
-            System.out.println("Stalemate");
+            Main.choosingGamemode = true;
+            Main.white += 0.5;
+            Main.black += 0.5;
         }
+        Main.surface.repaint();
     }
     public static void run(int row, int col){
         if(Main.castling){
@@ -209,6 +216,11 @@ public class Run {
         }
         DrawingCanvas.hoverRow = -1;
         DrawingCanvas.hoverCol = -1;
+        if(Main.whiteTurn){
+            Main.whiteTime += Main.increment;
+        }else{
+            Main.blackTime += Main.increment;
+        }
         Main.whiteTurn = !Main.whiteTurn;
         tempReset();
     }

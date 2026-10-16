@@ -20,18 +20,29 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
                     int mouseY = e.getY();
                     int col = (mouseX - boarder) / squareSize;
                     int row = (mouseY - boarder) / squareSize; 
-                    if(col >= 0 && col < 8 && row >= 0 && row < 8){
-                        if(Main.selectBoard[row][col] == 0){
-                            hoverRow = row;
-                            hoverCol = col;
+                    if(Main.choosingGamemode){
+                        if(row >=4){
+                            Main.gamemodeGame[0] = row;
+                            Main.gamemodeGame[1] = col;
                         }else{
-                            hoverRow = -1;
-                            hoverCol = -1;
+                            Main.gamemodeTime[0] = row;
+                            Main.gamemodeTime[1] = col;
                         }
-                        Run.turn(row,col);
-                        if(Main.pieceChange){
-                            hoverRow = Main.prevRow;
-                            hoverCol = Main.prevCol;
+                        repaint();
+                    }else{
+                        if(col >= 0 && col < 8 && row >= 0 && row < 8){
+                            if(Main.selectBoard[row][col] == 0){
+                                hoverRow = row;
+                                hoverCol = col;
+                            }else{
+                                hoverRow = -1;
+                                hoverCol = -1;
+                            }
+                            Run.turn(row,col);
+                            if(Main.pieceChange){
+                                hoverRow = Main.prevRow;
+                                hoverCol = Main.prevCol;
+                            }
                         }
                     }
                 }                
@@ -61,7 +72,6 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
     }
     @Override
     public void keyPressed(KeyEvent e){
-        
         if(Main.setUp && e.getKeyCode() == KeyEvent.VK_ENTER){
             if(Main.player1){
                 Main.player1 = false;
@@ -69,7 +79,39 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
                 Main.setUp = false;
             }
             repaint();
+        }else if(Main.choosingGamemode && e.getKeyCode() == KeyEvent.VK_ENTER){
+            if(Main.gamemodeGame[0] != -1 && Main.gamemodeTime[0] != -1){
+                Main.choosingGamemode = false;
+                int time = Main.gamemodeTime[1]+Main.gamemodeTime[0]*8;
+                int game = Main.gamemodeGame[1]+Main.gamemodeGame[0]*8-32;
+                String gameTime = Main.gameModes[time];
+                // String gameGame = Main.gamemodeGames[game];
+                String[] parts = gameTime.split("\\|");
+                int minutes = Integer.valueOf(parts[0].trim());
+                int secondsIncrement = Integer.valueOf(parts[1].trim());
+                
+                if(minutes == 0){
+                    Main.whiteTime = -1;
+                    Main.blackTime = -1;
+                    Main.timeless = true;
+                }else{
+                    Main.whiteTime = minutes*60;
+                    Main.blackTime = minutes*60;
+                    Main.timeless = false;
+                }
+                Main.increment = secondsIncrement;
+            }
+            Main.resetCurrent();
+            Run.tempReset();
+            Main.whiteTurn = true;
+            Main.whiteTaken.clear();
+            Main.blackTaken.clear();
+            Main.blackScore = 0;
+            Main.whiteScore = 0;
+            Main.prevSelect = new int[8][8];
+            repaint();
         }
+        
     }
     @Override
     public void keyReleased(KeyEvent e){
@@ -82,12 +124,16 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if(!Main.setUp){
-            Display.drawBoard(g2d);
-            Display.pieces(g2d);
-            Display.promotion(g2d);
-            Display.takenPieces(g2d);
-            Display.drawDots(g2d);
-            Display.chessClock(g2d);
+            if(!Main.choosingGamemode){
+                Display.drawBoard(g2d);
+                Display.pieces(g2d);
+                Display.promotion(g2d);
+                Display.takenPieces(g2d);
+                Display.drawDots(g2d);
+                Display.chessClock(g2d);
+            }else{
+                Display.gameMode(g2d);
+            }
         }else{
             Display.setUp(g2d);
         }

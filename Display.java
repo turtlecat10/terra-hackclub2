@@ -209,17 +209,60 @@ public class Display {
         }
     }
     public static void chessClock(Graphics2D g2d){
-        int whiteMin = Main.whiteTime / 60;
-        int whiteSec = Main.whiteTime % 60;
-        String whiteClockText = String.format("%02d:%02d",whiteMin,whiteSec);
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
-        g2d.drawString(whiteClockText,boarder+squareSize*6,boarder+squareSize*8+24);
-        int blackMin = Main.blackTime / 60;
-        int blackSec = Main.blackTime % 60;
-        String blackClockText = String.format("%02d:%02d",blackMin,blackSec);
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
-        g2d.drawString(blackClockText,boarder+squareSize*6,24);
+        if(Main.whiteTime > 0 && Main.blackTime > 0){
+            int whiteMin = Main.whiteTime / 60;
+            int whiteSec = Main.whiteTime % 60;
+            String whiteClockText = String.format("%02d:%02d",whiteMin,whiteSec);
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
+            g2d.drawString(whiteClockText,boarder+squareSize*6,boarder+squareSize*8+24);
+            int blackMin = Main.blackTime / 60;
+            int blackSec = Main.blackTime % 60;
+            String blackClockText = String.format("%02d:%02d",blackMin,blackSec);
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Monospaced",Font.BOLD, 24));
+            g2d.drawString(blackClockText,boarder+squareSize*6,24);
+        }
+    }
+    public static void gameMode(Graphics2D g2d){
+        g2d.setColor(boarderColor);
+        g2d.fillRect(0,0,squareSize*8+boarder*2,squareSize*8+boarder*2);
+        for(int col = 0; col < squares; col++){
+            for(int row = 0; row < squares; row++){
+                int x = boarder + (col*squareSize);
+                int y = boarder + (row*squareSize);
+                boolean isGameSelected = (Main.gamemodeGame[0] == row && Main.gamemodeGame[1] == col);
+                boolean isTimeSelected = (Main.gamemodeTime[0] == row && Main.gamemodeTime[1] == col);
+                boolean shouldHighlight = isGameSelected || isTimeSelected;
+                if((col+row) % 2 == 0){
+                    if(shouldHighlight){
+                        g2d.setColor(highLightSquare);
+                    }else{
+                        g2d.setColor(lightSquare);
+                    }
+                }else{
+                    if(shouldHighlight){
+                        g2d.setColor(highDarkSquare);
+                    }else{
+                        g2d.setColor(darkSquare);
+                    }
+                }
+                g2d.fillRect(x,y, squareSize, squareSize);
+            }
+        }
+        Font myFont = new Font("Ariel",Font.PLAIN,20);
+        Color color = new Color(0,0,0);
+        g2d.setFont(myFont);
+        g2d.setColor(color);
+        g2d.drawString(name1+": "+Main.black,boarder,boarder/2);
+        g2d.drawString(name2+": "+Main.white, boarder, boarder+squareSize*8+boarder/2);
+        for(int i = 0; i < Main.gameModes.length; i++){
+            g2d.drawString(Main.gameModes[i],boarder+squareSize*(i % 8)+5, boarder+squareSize*Integer.valueOf(i/8)+squareSize/2);
+        }
+        Font font = new Font("Ariel",Font.PLAIN,10);
+        g2d.setFont(font);
+        for(int i = 32; i < Main.gamemodeGames.length+32; i++){
+            g2d.drawString(Main.gamemodeGames[i-32],boarder+squareSize*(i % 8)+5, boarder+squareSize*Integer.valueOf(i/8)+squareSize/2);
+        }
     }
 }

@@ -12,6 +12,8 @@ public class Display {
     private static final int circle = 20;
     public static String name1 = "";
     public static String name2 = "";
+    public static int customMin = 0;
+    public static int customSec = 0;
 
     private static final Color lightSquare = new Color(235, 236, 208);
     private static final Color highLightSquare = new Color(245, 246, 130);
@@ -263,6 +265,23 @@ public class Display {
         g2d.setFont(font);
         for(int i = 32; i < Main.gamemodeGames.length+32; i++){
             g2d.drawString(Main.gamemodeGames[i-32],boarder+squareSize*(i % 8)+5, boarder+squareSize*Integer.valueOf(i/8)+squareSize/2);
+        }
+    }
+    public static void customTime(Graphics2D g2d){
+        if(Main.choosingMinutes){
+            Font myFont = new Font("Ariel",Font.PLAIN,30);
+            Color color = new Color(0,0,0);
+            g2d.setFont(myFont);
+            g2d.setColor(color);
+            g2d.drawString("Please enter minutes",30,30);
+            g2d.drawString(Integer.toString(customMin),30,60);
+        }else{
+            Font myFont = new Font("Ariel",Font.PLAIN,30);
+            Color color = new Color(0,0,0);
+            g2d.setFont(myFont);
+            g2d.setColor(color);
+            g2d.drawString("Please enter added seconds per move",30,30);
+            g2d.drawString(Integer.toString(customSec),30,60);
         }
     }
 }

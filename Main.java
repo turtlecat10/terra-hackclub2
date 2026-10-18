@@ -18,7 +18,9 @@ public class Main{
     public static String[][] attackBoard = new String[8][8];
     public static boolean setUp = true;
     public static boolean choosingGamemode = true;
-    public static String[] gameModes = {"15|10","10|5","10|0","3|0","3|2","5|0","5|5","90|30","60|0","0|0"};
+    public static String[] gameModes = {"15|10","10|5","10|0","3|0","3|2","5|0","5|5","90|30","60|0","0|0","Custom"};
+    public static boolean choosingTime = false;
+    public static boolean choosingMinutes = true;
     public static String[] gamemodeGames = {"Standard"};
     public static boolean player1 = true;
     public static String pieceClicked = "0";

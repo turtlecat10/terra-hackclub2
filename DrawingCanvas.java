@@ -68,6 +68,21 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
                 }
             }
             repaint();
+        }else if(Main.choosingTime){
+            if(typedChar == KeyEvent.VK_BACK_SPACE){
+                if(Main.choosingMinutes){
+                    Display.customMin = Display.customMin/10;
+                }else{
+                    Display.customSec = Display.customSec/10;
+                }
+            }else if(Character.isDigit(typedChar)){
+                if(Main.choosingMinutes){
+                    Display.customMin = Display.customMin*10+Character.getNumericValue(typedChar);
+                }else{
+                    Display.customSec = Display.customSec*10+Character.getNumericValue(typedChar);
+                }
+            }
+            repaint();
         }
     }
     @Override
@@ -79,26 +94,47 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
                 Main.setUp = false;
             }
             repaint();
-        }else if(Main.choosingGamemode && e.getKeyCode() == KeyEvent.VK_ENTER){
+        }else if(Main.choosingTime && e.getKeyCode() == KeyEvent.VK_ENTER){
+            if(Main.choosingMinutes){
+                Main.choosingMinutes = false;
+                Main.whiteTime = Display.customMin*60;
+                Main.blackTime = Display.customMin*60;
+                Display.customMin = 0;
+            }else{
+                Main.increment = Display.customSec;
+                Display.customSec = 0;
+                Main.choosingTime = false;
+                Main.choosingMinutes = true;
+            }
+        }
+        else if(Main.choosingGamemode && e.getKeyCode() == KeyEvent.VK_ENTER){
             if(Main.gamemodeGame[0] != -1 && Main.gamemodeTime[0] != -1){
                 Main.choosingGamemode = false;
                 int time = Main.gamemodeTime[1]+Main.gamemodeTime[0]*8;
-                int game = Main.gamemodeGame[1]+Main.gamemodeGame[0]*8-32;
+                // int game = Main.gamemodeGame[1]+Main.gamemodeGame[0]*8-32;
                 String gameTime = Main.gameModes[time];
                 // String gameGame = Main.gamemodeGames[game];
-                String[] parts = gameTime.split("\\|");
-                int minutes = Integer.valueOf(parts[0].trim());
-                int secondsIncrement = Integer.valueOf(parts[1].trim());
-                
-                if(minutes == 0){
-                    Main.whiteTime = -1;
-                    Main.blackTime = -1;
-                    Main.timeless = true;
+                String[] parts;
+                int minutes;
+                int secondsIncrement = 0;
+                if(gameTime.equals("Custom")){
+                    Main.choosingGamemode = false;
+                    Main.choosingTime = true;
                 }else{
-                    Main.whiteTime = minutes*60;
-                    Main.blackTime = minutes*60;
-                    Main.timeless = false;
+                    parts = gameTime.split("\\|");
+                    minutes = Integer.valueOf(parts[0].trim());
+                    secondsIncrement = Integer.valueOf(parts[1].trim());
+                    if(minutes == 0){
+                        Main.whiteTime = -1;
+                        Main.blackTime = -1;
+                        Main.timeless = true;
+                    }else{
+                        Main.whiteTime = minutes*60;
+                        Main.blackTime = minutes*60;
+                        Main.timeless = false;
+                    }
                 }
+
                 Main.increment = secondsIncrement;
             }
             Main.resetCurrent();
@@ -123,19 +159,37 @@ public class DrawingCanvas extends JPanel implements java.awt.event.KeyListener 
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if(!Main.setUp){
-            if(!Main.choosingGamemode){
-                Display.drawBoard(g2d);
-                Display.pieces(g2d);
-                Display.promotion(g2d);
-                Display.takenPieces(g2d);
-                Display.drawDots(g2d);
-                Display.chessClock(g2d);
-            }else{
-                Display.gameMode(g2d);
-            }
-        }else{
+        if(Main.setUp){
             Display.setUp(g2d);
+        }else if(Main.choosingTime){
+            Display.customTime(g2d);
+        }else if(Main.choosingGamemode){
+            Display.gameMode(g2d);
+        }else{
+            Display.drawBoard(g2d);
+            Display.pieces(g2d);
+            Display.promotion(g2d);
+            Display.takenPieces(g2d);
+            Display.drawDots(g2d);
+            Display.chessClock(g2d);
         }
+
+
+        // if(!Main.setUp){
+        //     if(!Main.choosingGamemode){
+        //         Display.drawBoard(g2d);
+        //         Display.pieces(g2d);
+        //         Display.promotion(g2d);
+        //         Display.takenPieces(g2d);
+        //         Display.drawDots(g2d);
+        //         Display.chessClock(g2d);
+        //     }else if(!Main.choosingTime){
+        //         Display.gameMode(g2d);
+        //     }else{
+        //         Display.customTime(g2d);
+        //     }
+        // }else{
+        //     Display.setUp(g2d);
+        // }
     }
 }

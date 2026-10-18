@@ -261,10 +261,17 @@ public class CheckLegal {
         return false;
     }
     public static boolean isCastle(int distX, int distY, int row, int col){
+         if (Main.prevRow < 0 || Main.prevRow > 7 || Main.prevCol < 0 || Main.prevCol > 7) {
+            return false;
+        }
         if(isCheck()){
             return false;
         }
         boolean[] rights;
+        String kingPiece = Main.currentBoard[row][col];
+        if (kingPiece.equals("0")) {
+            return false;
+        }
         if(Main.currentBoard[Main.prevRow][Main.prevCol].charAt(0) == 'w'){
             rights = Main.whiteCastle;
         }else{
@@ -274,7 +281,6 @@ public class CheckLegal {
             return false;
         }
         int directionX = (distX > 0) ? 1 : -1;
-        String kingPiece = Main.currentBoard[row][col];
         if(distX == 2){
             if(rights[2]){
                 return false;
